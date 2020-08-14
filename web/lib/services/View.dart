@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class View {
   MediaQueryData _mediaQueryData;
@@ -26,6 +27,9 @@ class CustomColor {
   final primary = Color(0xFF172F37);
   final primary80 = Color(0xF0172F37);
   final primaryDark = Color(0xFF08191F);
+  final biru_ndok = Color(0xFF1B6965);
+  final ungu = Color(0xFF5F2D5A);
+  final birutua = Color(0xFF212459);
 }
 
 class CustomText {
@@ -76,20 +80,72 @@ class CustomCardState extends State<CustomCard> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            blurRadius: 7,
+            spreadRadius: 3,
+          )
+        ],
         borderRadius: BorderRadius.circular(10),
         color: widget.state == true
             ? Colors.blue.withOpacity(0.5)
             : CustomColor().primaryDark,
       ),
-      margin: EdgeInsets.only(top: 5, bottom: 5),
+      margin: EdgeInsets.all(5),
+      child: ListTile(
+        leading: widget.icon,
+        title: Text(
+          widget.title,
+          style: GoogleFonts.poppins(fontSize: View.blockX * 2, color: Colors.white),
+          textAlign: TextAlign.start,
+        ),
+        subtitle: Text(
+          widget.subtitle,
+          style: GoogleFonts.poppins(fontSize: View.blockX * 3, color: Colors.white),
+        ),
+        onTap: widget.function,
+      ),
+    );
+  }
+}
+
+class CustomCard2 extends StatefulWidget {
+  final String title, subtitle;
+  final Icon icon;
+  final Function function;
+  final Function longpress;
+  final Color color;
+  const CustomCard2(
+      {Key key,
+      this.title,
+      this.icon,
+      this.function,
+      this.longpress,
+      this.subtitle,
+      this.color})
+      : super(key: key);
+  @override
+  _CustomCardState createState() => _CustomCardState();
+}
+
+class _CustomCardState extends State<CustomCard2> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: widget.color,
+      ),
+      margin: EdgeInsets.all(5),
       child: ListTile(
         leading: widget.icon,
         title: Text(widget.title,
-            style: TextStyle(fontSize: View.blockX * 6, color: Colors.white)),
-        subtitle: Text(
-          widget.subtitle,
-          style: TextStyle(fontSize: View.blockX * 4, color: Colors.white),
-        ),
+            style: GoogleFonts.poppins(
+                fontSize: View.blockX * 2, color: Colors.white)),
+        subtitle: Text(widget.subtitle,
+            style: GoogleFonts.poppins(
+                fontSize: View.blockX * 5, color: Colors.white)),
         onTap: widget.function,
       ),
     );

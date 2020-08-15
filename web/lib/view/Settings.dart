@@ -2,17 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:web/controller/RelayController.dart';
 import 'package:web/controller/ScheduleController.dart';
 import 'package:web/services/ApiConnect.dart';
 
-import 'services/View.dart';
+import '../services/View.dart';
 
 class SettingPage extends StatelessWidget {
+  // ignore: unused_field
   final ScheduleController _scheduleController = Get.put(ScheduleController());
-  List<String> jam = ['17.52', '20.52'];
+  // ignore: unused_field
+  final RelayController _relayController = Get.put(RelayController());
   @override
   Widget build(BuildContext context) {
     View().init(context);
+    ApiConnect().getSchedule();
+    ApiConnect().getRelay();
     return Scaffold(
       backgroundColor: CustomColor().primary,
       appBar: AppBar(
@@ -26,7 +31,7 @@ class SettingPage extends StatelessWidget {
               width: View.blockX * 40,
               height: View.blockY * 10,
               child: Text(
-                'Terjadwal',
+                'Jadwal',
                 style: GoogleFonts.poppins(
                     color: Colors.white, fontSize: View.blockX * 2),
                 textAlign: TextAlign.end,
@@ -38,25 +43,24 @@ class SettingPage extends StatelessWidget {
               height: View.blockY * 70,
               child: GetBuilder<ScheduleController>(
                 builder: (_) {
-                  print('Data waktu ${_.time.isNullOrBlank}');
-                  if (_.time.isNullOrBlank)
-                    return Text('Belum ada jadwal',
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontSize: View.blockX*3),);
+                  if (_.date.isNullOrBlank || _.date.length == 0)
+                    return Text(
+                      'Belum ada jadwal',
+                      style: GoogleFonts.poppins(
+                          color: Colors.white, fontSize: View.blockX * 3),
+                    );
                   else
                     return ListView.builder(
-                      itemCount: jam.length,
+                      itemCount: _.date.length,
                       itemBuilder: (context, index) {
                         return _CustomCard(
-                          title:
-                              DateTime.now().toLocal().toString().split(' ')[0],
+                          title: '${_.date[index]}',
                           icon: Icon(
                             Icons.date_range,
                             color: Colors.white,
                             size: View.blockX * 5,
                           ),
-                          subtitle: '${jam[index]}',
+                          subtitle: '${_.time[index]}',
                         );
                       },
                     );
@@ -67,29 +71,37 @@ class SettingPage extends StatelessWidget {
             left: View.blockX * 5,
             width: View.blockX * 40,
             height: View.blockY * 80,
-            child: GridView.count(
-              crossAxisCount: 2,
-              childAspectRatio: 3 / 2,
-              mainAxisSpacing: 5,
-              crossAxisSpacing: 5,
-              children: [
-                _Button(
-                  color: CustomColor().biru_ndok,
-                  title: 'RELAY 1',
-                ),
-                _Button(
-                  color: CustomColor().biru_ndok,
-                  title: 'RELAY 2',
-                ),
-                _Button(
-                  color: CustomColor().biru_ndok,
-                  title: 'RELAY 3',
-                ),
-                _Button(
-                  color: CustomColor().biru_ndok,
-                  title: 'RELAY 4',
-                ),
-              ],
+            child: GetBuilder<RelayController>(
+              builder: (_) {
+                return GridView.count(
+                  crossAxisCount: 2,
+                  childAspectRatio: 3 / 2,
+                  mainAxisSpacing: 5,
+                  crossAxisSpacing: 5,
+                  children: [
+                    _Button(
+                      title: 'RELAY 1',
+                      state: _.relay1,
+                      function: () => ApiConnect().setRelay(1),
+                    ),
+                    _Button(
+                      title: 'RELAY 2',
+                      state: _.relay2,
+                      function: () => ApiConnect().setRelay(2),
+                    ),
+                    _Button(
+                      title: 'RELAY 3',
+                      state: _.relay3,
+                      function: () => ApiConnect().setRelay(3),
+                    ),
+                    _Button(
+                      title: 'RELAY 4',
+                      state: _.relay4,
+                      function: () => ApiConnect().setRelay(4),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
           Positioned(
@@ -98,10 +110,14 @@ class SettingPage extends StatelessWidget {
             width: View.blockX * 40,
             height: View.blockY * 10,
             child: Container(
-              decoration: BoxDecoration(color: CustomColor().biru_ndok),
+              decoration: BoxDecoration(color: Colors.red),
               child: FlatButton(
-                  onPressed: () => null,
-                  color: CustomColor().biru_ndok,
+                  onPressed: () {
+                    ApiConnect().allPowerOff();
+                    Get.snackbar('Peringatan !!!', 'Semua Alat Telah Dimatikan',
+                        colorText: Colors.white, backgroundColor: Colors.red);
+                  },
+                  color: Colors.red,
                   child: Text(
                     'ALL POWER OFF',
                     style: GoogleFonts.poppins(
@@ -128,7 +144,7 @@ class SettingPage extends StatelessWidget {
   }
 }
 
-class _CustomCard extends StatefulWidget {
+class _CustomCard extends StatelessWidget {
   final String title, subtitle;
   final Icon icon;
   final Function function;
@@ -144,11 +160,6 @@ class _CustomCard extends StatefulWidget {
       this.state})
       : super(key: key);
   @override
-  _CustomCardState createState() => _CustomCardState();
-}
-
-class _CustomCardState extends State<_CustomCard> {
-  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -160,25 +171,25 @@ class _CustomCardState extends State<_CustomCard> {
           )
         ],
         borderRadius: BorderRadius.circular(10),
-        color: widget.state == true
+        color: state == true
             ? Colors.blue.withOpacity(0.5)
             : CustomColor().primaryDark,
       ),
       margin: EdgeInsets.all(10),
       child: ListTile(
-        leading: widget.icon,
+        leading: icon,
         title: Text(
-          widget.title,
+          title,
           style: GoogleFonts.poppins(
               fontSize: View.blockX * 2, color: Colors.white),
           textAlign: TextAlign.start,
         ),
         subtitle: Text(
-          widget.subtitle,
+          subtitle,
           style: GoogleFonts.poppins(
               fontSize: View.blockX * 3, color: Colors.white),
         ),
-        onTap: widget.function,
+        onTap: function,
       ),
     );
   }
@@ -187,13 +198,16 @@ class _CustomCardState extends State<_CustomCard> {
 class _Button extends StatelessWidget {
   final String title;
   final Icon icon;
-  final Color color;
-  const _Button({Key key, this.title, this.icon, this.color}) : super(key: key);
+  final Function function;
+  final int state;
+  const _Button({Key key, this.title, this.icon, this.function, this.state})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration:
-          BoxDecoration(color: color, borderRadius: BorderRadius.circular(10)),
+      decoration: BoxDecoration(
+          color: state == 1 ? CustomColor().biru_ndok : Colors.red,
+          borderRadius: BorderRadius.circular(10)),
       child: FlatButton(
         child: Text(
           title,
@@ -201,7 +215,7 @@ class _Button extends StatelessWidget {
               color: Colors.white, fontSize: View.blockX * 3),
           textAlign: TextAlign.center,
         ),
-        onPressed: () => null,
+        onPressed: function,
       ),
     );
   }

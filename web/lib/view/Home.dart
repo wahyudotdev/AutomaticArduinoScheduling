@@ -2,20 +2,25 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'package:web/Settings.dart';
+import 'package:web/controller/WarningController.dart';
+import 'package:web/view/Settings.dart';
 import 'package:web/services/ApiConnect.dart';
 import 'package:web/controller/SensorController.dart';
 import 'package:web/services/View.dart';
 
-import 'services/View.dart';
-import 'services/View.dart';
+import '../services/View.dart';
 
 class Home extends StatelessWidget {
+  // ignore: unused_field
   final SensorController _sensorController = Get.put(SensorController());
+  // ignore: unused_field
+  final WarningController _warningController = Get.put(WarningController());
   @override
   Widget build(BuildContext context) {
-    Timer.periodic(Duration(seconds: 3), (timer) => ApiConnect().getSensor());
+    Timer.periodic(Duration(seconds: 3), (timer) {
+      ApiConnect().getSensor();
+      ApiConnect().checkSchedule();
+    });
     View().init(context);
     return GetBuilder<SensorController>(
       builder: (_) {
@@ -42,14 +47,18 @@ class Home extends StatelessWidget {
                     children: [
                       Expanded(
                         flex: 2,
-                        child: CustomCard(
-                          icon: Icon(
-                            Icons.home,
-                            color: Colors.white,
-                            size: View.blockX * 5,
-                          ),
-                          title: 'Status Ruang',
-                          subtitle: 'Ruangan Sedang Digunakan',
+                        child: GetBuilder<WarningController>(
+                          builder: (_) {
+                            return CustomCard(
+                              icon: Icon(
+                                Icons.home,
+                                color: Colors.white,
+                                size: View.blockX * 5,
+                              ),
+                              title: 'Status Ruang',
+                              subtitle: '${_.remaining}',
+                            );
+                          },
                         ),
                       ),
                       Expanded(

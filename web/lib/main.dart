@@ -1,8 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'Home.dart';
+import 'view/Home.dart';
 import 'services/View.dart';
 void main() {
   runApp(MyApp());

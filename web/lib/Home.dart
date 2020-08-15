@@ -1,123 +1,130 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:web/Settings.dart';
-import 'package:web/services/Controller.dart';
+import 'package:web/services/ApiConnect.dart';
+import 'package:web/controller/SensorController.dart';
 import 'package:web/services/View.dart';
 
 import 'services/View.dart';
 import 'services/View.dart';
 
 class Home extends StatelessWidget {
-  final Controller c = Get.put(Controller());
+  final SensorController _sensorController = Get.put(SensorController());
   @override
   Widget build(BuildContext context) {
+    Timer.periodic(Duration(seconds: 3), (timer) => ApiConnect().getSensor());
     View().init(context);
-    return Scaffold(
-      backgroundColor: CustomColor().primaryDark,
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Icon(Icons.flight),
-            Text(' Monitor Ruang Kelas Teknik Listrik Bandara')
-          ],
-        ),
-        backgroundColor: CustomColor().primary,
-      ),
-      body: Stack(
-        children: [
-          Positioned(
-            top: View.blockY * 5,
-            right: View.blockX * 20,
-            width: View.blockX * 60,
-            height: View.blockY * 75,
-            child: Center(
-              child: Column(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: CustomCard(
-                      icon: Icon(
-                        Icons.home,
-                        color: Colors.white,
-                        size: View.blockX * 5,
-                      ),
-                      title: 'Status Ruang',
-                      subtitle: 'Ruangan Sedang Digunakan',
-                    ),
-                  ),
-                  Expanded(
-                      flex: 6,
-                      child: Container(
-                          margin: EdgeInsets.only(top: 5),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Container(
-                                  child: Column(
-                                    children: [
-                                      _SensorMonitor(
-                                        title: 'Suhu',
-                                        color: CustomColor().birutua,
-                                        icon: Icon(
-                                          Icons.wb_sunny,
-                                          size: View.blockX * 7,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      _SensorMonitor(
-                                        title: 'Tekanan',
-                                        color: CustomColor().ungu,
-                                        icon: Icon(Icons.arrow_downward,
-                                            size: View.blockX * 7,
-                                            color: Colors.white),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Container(
-                                    child: Column(
-                                  children: [
-                                    _SensorMonitor(
-                                      title: 'Kelembaban',
-                                      color: CustomColor().biru_ndok,
-                                      icon: Icon(Icons.cloud,
-                                          size: View.blockX * 7,
-                                          color: Colors.white),
-                                    ),
-                                    _SensorMonitor(
-                                      title: 'Air Flow',
-                                      color: Colors.indigo,
-                                      icon: Icon(Icons.ac_unit,
-                                          size: View.blockX * 7,
-                                          color: Colors.white),
-                                    )
-                                  ],
-                                )),
-                              ),
-                            ],
-                          )))
-                ],
-              ),
-              // child: Container(
-              //   child: FlatButton(
-              //     onPressed: () => c.increment(),
-              //     child: Obx(() => Text("Clicks: " + c.count.string)),
-              //   ),
-              // ),
+    return GetBuilder<SensorController>(
+      builder: (_) {
+        return Scaffold(
+          backgroundColor: CustomColor().primaryDark,
+          appBar: AppBar(
+            title: Row(
+              children: [
+                Icon(Icons.flight),
+                Text(' Monitor Ruang Kelas Teknik Listrik Bandara')
+              ],
             ),
-          )
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.settings,),
-        backgroundColor: CustomColor().primary,
-        onPressed: () => Get.to(SettingPage()),
-      ),
+            backgroundColor: CustomColor().primary,
+          ),
+          body: Stack(
+            children: [
+              Positioned(
+                top: View.blockY * 5,
+                right: View.blockX * 20,
+                width: View.blockX * 60,
+                height: View.blockY * 75,
+                child: Center(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: CustomCard(
+                          icon: Icon(
+                            Icons.home,
+                            color: Colors.white,
+                            size: View.blockX * 5,
+                          ),
+                          title: 'Status Ruang',
+                          subtitle: 'Ruangan Sedang Digunakan',
+                        ),
+                      ),
+                      Expanded(
+                          flex: 6,
+                          child: Container(
+                              margin: EdgeInsets.only(top: 5),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                      child: Column(
+                                        children: [
+                                          _SensorMonitor(
+                                            title: 'Suhu',
+                                            color: CustomColor().birutua,
+                                            value: '${_.temp} ° C',
+                                            icon: Icon(
+                                              Icons.wb_sunny,
+                                              size: View.blockX * 7,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          _SensorMonitor(
+                                            title: 'Tekanan',
+                                            color: CustomColor().ungu,
+                                            value: '${_.press} atm',
+                                            icon: Icon(Icons.arrow_downward,
+                                                size: View.blockX * 7,
+                                                color: Colors.white),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                        child: Column(
+                                      children: [
+                                        _SensorMonitor(
+                                          title: 'Kelembaban',
+                                          color: CustomColor().biru_ndok,
+                                          value: '${_.hum} %',
+                                          icon: Icon(Icons.cloud,
+                                              size: View.blockX * 7,
+                                              color: Colors.white),
+                                        ),
+                                        _SensorMonitor(
+                                          title: 'Air Flow',
+                                          color: Colors.indigo,
+                                          value: '${_.air}',
+                                          icon: Icon(Icons.ac_unit,
+                                              size: View.blockX * 7,
+                                              color: Colors.white),
+                                        )
+                                      ],
+                                    )),
+                                  ),
+                                ],
+                              )))
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+          floatingActionButton: FloatingActionButton(
+              child: Icon(
+                Icons.settings,
+              ),
+              backgroundColor: CustomColor().primary,
+              onPressed: () => Get.to(SettingPage())),
+        );
+      },
     );
   }
 }
@@ -127,7 +134,8 @@ class _SensorMonitor extends StatelessWidget {
   final String value;
   final Color color;
   final Icon icon;
-  const _SensorMonitor({Key key,this.title,this.value, this.color, this.icon}) : super(key: key);
+  const _SensorMonitor({Key key, this.title, this.value, this.color, this.icon})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -135,7 +143,7 @@ class _SensorMonitor extends StatelessWidget {
       child: Center(
         child: CustomCard2(
           title: title,
-          subtitle: '00',
+          subtitle: value,
           icon: icon,
           color: color,
         ),

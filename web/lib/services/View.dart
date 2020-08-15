@@ -145,7 +145,7 @@ class _CustomCardState extends State<CustomCard2> {
                 fontSize: View.blockX * 2, color: Colors.white)),
         subtitle: Text(widget.subtitle,
             style: GoogleFonts.poppins(
-                fontSize: View.blockX * 5, color: Colors.white)),
+                fontSize: View.blockX * 3, color: Colors.white)),
         onTap: widget.function,
       ),
     );

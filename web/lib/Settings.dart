@@ -3,8 +3,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'services/View.dart';
-import 'services/View.dart';
-import 'services/View.dart';
 
 class SettingPage extends StatelessWidget {
   // List<String> tanggal = ['14 Aug 2020'];

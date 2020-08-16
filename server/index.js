@@ -54,6 +54,11 @@ app.get('/startrelay', (req, res) => {
         }
     })
 })
+app.get('/noderelay',(req,res)=>{
+    db.query(`select relay1,relay2,relay3,relay4 from relay`,(err,result,field)=>{
+        res.send(result[0])
+    })
+})
 app.get('/poweroff', (req, res) => {
     console.log('got request')
     db.query(`update relay set relay1=0,relay2=0,relay3=0,relay4=0`, (err, result, field) => {
@@ -79,11 +84,11 @@ app.get('/cekjadwal', (req, res) => {
     })
 })
 
-app.post('/nodemcu', (req, res) => {
-    var temp = req.body.temp
-    var hum = req.body.hum
-    var press = req.body.press
-    var air = req.body.air
+app.get('/nodemcu', (req, res) => {
+    var temp = req.query.temp
+    var hum = req.query.hum
+    var press = req.query.press
+    var air = req.query.air
     db.query(`insert into sensor (temp,hum,press,air) value (${temp},${hum},${press},${air})`)
     res.send('OK')
 })

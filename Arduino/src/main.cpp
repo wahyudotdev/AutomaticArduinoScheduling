@@ -7,10 +7,10 @@
 #define RX_PIN      5
 #define TX_PIN      6
 #define CTL_PIN     4
-#define RELAY1      7
-#define RELAY2      8
-#define RELAY3      9
-#define RELAY4      13
+#define RELAY1      A0
+#define RELAY2      A1
+#define RELAY3      A2
+#define RELAY4      A3
 #define SDA_PIN     A4
 #define SCL_PIN     A5
 
@@ -35,7 +35,6 @@ void loop()
 {
     bool ctl = digitalRead(CTL_PIN);
     DynamicJsonDocument output(1024);
-    // Serial.println(ctl);
     if (ctl == 1)
     {
         if (data.available() > 0)
@@ -56,17 +55,18 @@ void loop()
 
 void sensorReading()
 {
-    // Diganti untuk pembacaan sensornya
-    int temp = 30 + (rand() % 5);
-    int hum = 70 + (rand() % 10);
-    int press = 10 + (rand() % 5);
-    int air = 5 + (rand() % 5);
-
+    // Diganti hasil baca real dari sensor
+    //====================================
+    float temp = 30 + (rand() % 5);
+    float hum = 70 + (rand() % 10);
+    float airflow = 10 + (rand() % 5);
+    float press = 90000+ (rand()%1000);
+    //====================================
     StaticJsonDocument<200> json;
     json["temp"] = temp;
     json["hum"] = hum;
     json["press"] = press;
-    json["air"] = air;
+    json["air"] = airflow;
     serializeJson(json, data);
     data.write(10);
 }

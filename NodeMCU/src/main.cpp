@@ -46,7 +46,6 @@ void loop()
         delay(100);
         data.write(relayData().c_str());
         data.write(10);
-        // data.write(2);
         delay(200);
         digitalWrite(CTL_PIN,LOW);
     }
@@ -82,8 +81,6 @@ String relayData()
         int httpResponseCode = http.GET();
         if (httpResponseCode > 0)
         {
-            Serial.print("HTTP Response code: ");
-            Serial.println(httpResponseCode);
             String result = http.getString();
             deserializeJson(output, result);
             int relay1 = output["relay1"];

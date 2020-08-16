@@ -83,9 +83,9 @@ class Home extends StatelessWidget {
                                             ),
                                           ),
                                           _SensorMonitor(
-                                            title: 'Tekanan',
+                                            title: 'Tekanan (Pa)',
                                             color: CustomColor().ungu,
-                                            value: '${_.press} atm',
+                                            value: '${_.press}',
                                             icon: Icon(Icons.arrow_downward,
                                                 size: View.blockX * 7,
                                                 color: Colors.white),

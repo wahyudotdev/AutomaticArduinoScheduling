@@ -27,7 +27,7 @@ class CustomColor {
   final primary = Color(0xFF172F37);
   final primary80 = Color(0xF0172F37);
   final primaryDark = Color(0xFF08191F);
-  final biru_ndok = Color(0xFF1B6965);
+  final biruNdok = Color(0xFF1B6965);
   final ungu = Color(0xFF5F2D5A);
   final birutua = Color(0xFF212459);
 }
@@ -61,7 +61,7 @@ class CustomCard extends StatefulWidget {
   final Icon icon;
   final Function function;
   final Function longpress;
-  final bool state;
+  final int state;
   const CustomCard(
       {Key key,
       this.title,
@@ -88,21 +88,21 @@ class CustomCardState extends State<CustomCard> {
           )
         ],
         borderRadius: BorderRadius.circular(10),
-        color: widget.state == true
-            ? Colors.blue.withOpacity(0.5)
-            : CustomColor().primaryDark,
+        color: widget.state == 0 ? Colors.red : CustomColor().biruNdok,
       ),
       margin: EdgeInsets.all(5),
       child: ListTile(
         leading: widget.icon,
         title: Text(
           widget.title,
-          style: GoogleFonts.poppins(fontSize: View.blockX * 2, color: Colors.white),
+          style: GoogleFonts.poppins(
+              fontSize: View.blockX * 2, color: Colors.white),
           textAlign: TextAlign.start,
         ),
         subtitle: Text(
           widget.subtitle,
-          style: GoogleFonts.poppins(fontSize: View.blockX * 3, color: Colors.white),
+          style: GoogleFonts.poppins(
+              fontSize: View.blockX * 3, color: Colors.white),
         ),
         onTap: widget.function,
       ),

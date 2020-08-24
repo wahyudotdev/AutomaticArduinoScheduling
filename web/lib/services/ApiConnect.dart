@@ -31,14 +31,20 @@ class ApiConnect {
     });
   }
 
-  Future<void> addSchedule(DateTime time) async {
+  Future<void> addSchedule(DateTime time, String state) async {
     int timestamp = time.millisecondsSinceEpoch;
-    await http.post('$_baseUrl/jadwal',
+    await http.post('$_baseUrl/jadwal?state=$state',
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode({'timestamp': timestamp}));
     await getSchedule();
+  }
+
+  Future<void> deleteSchedule(int timestamp) async {
+    await http
+        .get('$_baseUrl/hapusjadwal?timestamp=$timestamp')
+        .then((value) async => await getSchedule());
   }
 
   Future<void> checkSchedule() async {

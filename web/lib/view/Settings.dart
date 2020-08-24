@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:web/controller/RelayController.dart';
@@ -61,6 +62,22 @@ class SettingPage extends StatelessWidget {
                             size: View.blockX * 5,
                           ),
                           subtitle: '${_.time[index]}',
+                          state: _.isOn[index],
+                          function: () => Get.defaultDialog(
+                            title: 'Hapus Jadwal?',
+                            content: Text('Anda akan menghapus jadwal'),
+                            confirm: FlatButton(
+                                onPressed: () {
+                                  Get.back();
+                                  // Get.snackbar('Peringatan !', 'Data Terhapus');
+                                  ApiConnect().deleteSchedule(_.waktu[index]);
+                                },
+                                child: Text('Hapus')),
+                            cancel: FlatButton(
+                                onPressed: () => Get.back(),
+                                child: Text('Batal')),
+                            buttonColor: CustomColor().primary,
+                          ),
                         );
                       },
                     );
@@ -110,7 +127,7 @@ class SettingPage extends StatelessWidget {
             width: View.blockX * 40,
             height: View.blockY * 10,
             child: Container(
-              decoration: BoxDecoration(color: Colors.red),
+              decoration: BoxDecoration(color: Colors.redAccent),
               child: FlatButton(
                   onPressed: () {
                     ApiConnect().allPowerOff();
@@ -129,16 +146,32 @@ class SettingPage extends StatelessWidget {
           )
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => DatePicker.showDateTimePicker(context,
-            showTitleActions: true,
-            minTime: DateTime.now(),
-            maxTime: DateTime(2021, 12, 31),
-            onConfirm: (time) => ApiConnect().addSchedule(time),
-            currentTime: DateTime.now()),
-        label: Text('Tambah Jadwal'),
-        icon: Icon(Icons.add),
-        backgroundColor: CustomColor().primary,
+      floatingActionButton: SpeedDial(
+        backgroundColor: CustomColor().biruNdok,
+        closeManually: false,
+        child: Icon(Icons.add),
+        children: [
+          SpeedDialChild(
+              child: Icon(Icons.check_circle_outline),
+              onTap: () => DatePicker.showDateTimePicker(context,
+                  showTitleActions: true,
+                  minTime: DateTime.now(),
+                  maxTime: DateTime(2021, 12, 31),
+                  onConfirm: (time) => ApiConnect().addSchedule(time, '1'),
+                  currentTime: DateTime.now()),
+              backgroundColor: CustomColor().biruNdok,
+              label: 'Tambah Jadwal Nyala'),
+          SpeedDialChild(
+              child: Icon(Icons.highlight_off),
+              onTap: () => DatePicker.showDateTimePicker(context,
+                  showTitleActions: true,
+                  minTime: DateTime.now(),
+                  maxTime: DateTime(2021, 12, 31),
+                  onConfirm: (time) => ApiConnect().addSchedule(time, '0'),
+                  currentTime: DateTime.now()),
+              backgroundColor: Colors.redAccent,
+              label: 'Tambah Jadwal Mati')
+        ],
       ),
     );
   }
@@ -149,7 +182,7 @@ class _CustomCard extends StatelessWidget {
   final Icon icon;
   final Function function;
   final Function longpress;
-  final bool state;
+  final int state;
   const _CustomCard(
       {Key key,
       this.title,
@@ -171,9 +204,7 @@ class _CustomCard extends StatelessWidget {
           )
         ],
         borderRadius: BorderRadius.circular(10),
-        color: state == true
-            ? Colors.blue.withOpacity(0.5)
-            : CustomColor().primaryDark,
+        color: state == 1 ? CustomColor().biruNdok : Colors.red,
       ),
       margin: EdgeInsets.all(10),
       child: ListTile(
@@ -206,7 +237,7 @@ class _Button extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: state == 1 ? CustomColor().biru_ndok : Colors.red,
+          color: state == 1 ? CustomColor().biruNdok : Colors.redAccent,
           borderRadius: BorderRadius.circular(10)),
       child: FlatButton(
         child: Text(

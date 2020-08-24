@@ -57,6 +57,7 @@ class Home extends StatelessWidget {
                               ),
                               title: 'Status Ruang',
                               subtitle: '${_.remaining}',
+                              state: 1,
                             );
                           },
                         ),
@@ -101,7 +102,7 @@ class Home extends StatelessWidget {
                                       children: [
                                         _SensorMonitor(
                                           title: 'Kelembaban',
-                                          color: CustomColor().biru_ndok,
+                                          color: CustomColor().biruNdok,
                                           value: '${_.hum} %',
                                           icon: Icon(Icons.cloud,
                                               size: View.blockX * 7,

@@ -1,9 +1,9 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 #include <ArduinoJson.h>
-#include <Wire.h>
-#include <SPI.h>
-#include <Adafruit_BMP280.h>
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h>
+
 #define RX_PIN      5
 #define TX_PIN      6
 #define CTL_PIN     4

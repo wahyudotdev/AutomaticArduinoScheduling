@@ -4,6 +4,7 @@ var app = express()
 var cors = require('cors')
 var bodyParser = require('body-parser')
 const cron = require('node-cron');
+var ip = require('ip');
 var mysql = require('mysql')
 var db = mysql.createConnection({
     host: "127.0.0.1",
@@ -68,10 +69,11 @@ app.get('/poweroff', (req, res) => {
     
 })
 app.get('/jadwal', (req, res) => {
-    db.query('select timestamp from jadwal', (err, result, field) => {
+    db.query('select timestamp,state from jadwal', (err, result, field) => {
         res.send(result)
     })
 })
+
 app.get('/cekjadwal', (req, res) => {
     const minute = 60000
     var now = Date.now()
@@ -83,7 +85,13 @@ app.get('/cekjadwal', (req, res) => {
         else res.send('NA')
     })
 })
-
+app.get('/hapusjadwal', (req, res) => {
+    let timestamp = req.query.timestamp
+    db.query(`delete from jadwal where timestamp = ${timestamp}`, (err, result, field) => {
+        res.send('ok')
+        console.log('jadwal terhapus')
+    })
+})
 app.get('/nodemcu', (req, res) => {
     var temp = req.query.temp
     var hum = req.query.hum
@@ -93,14 +101,26 @@ app.get('/nodemcu', (req, res) => {
     res.send('OK')
 })
 app.post('/jadwal', (req, res) => {
-    console.log(req.body)
-    db.query(`insert into jadwal (timestamp) value (${req.body.timestamp})`)
+    let state = parseInt(req.query.state)
+    let timestamp = req.body.timestamp
+    db.query(`insert into jadwal (timestamp,state) value (${timestamp},${state})`)
     res.send('OK')
 })
 
 cron.schedule('* * * * * *', () => {
     var now = Date.now()
-    db.query(`delete from jadwal where timestamp < ${now}`)
-});
+    db.query(`select timestamp from jadwal where timestamp < ${now} AND state = 0`, (err, rows, field) => {
+        if (rows.length > 0) {
+            db.query(`update relay set relay1=0,relay2=0,relay3=0,relay4=0`)
+            db.query(`delete from jadwal where timestamp < ${now} AND state = 0`)
+        }
+    })
+    db.query(`select timestamp from jadwal where timestamp < ${now} AND state = 1`, (err, rows, field) => {
+        if (rows.length > 0) {
+            db.query(`update relay set relay1=1,relay2=1,relay3=1,relay4=1`)
+            db.query(`delete from jadwal where timestamp < ${now} AND state = 1`)
+        }
+    })
+})
 
-app.listen(3000, console.log('Server Started'))
+app.listen(3000, console.log(`Web Server : ${ip.address()}:3000`))

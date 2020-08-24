@@ -78,7 +78,7 @@ app.get('/cekjadwal', (req, res) => {
     const minute = 60000
     var now = Date.now()
     var todo = now + (minute * 5)
-    db.query(`select timestamp from jadwal where timestamp < ${todo} and timestamp > ${now}`,(_err,_result,_field)=> {
+    db.query(`select timestamp,state from jadwal where timestamp < ${todo} and timestamp > ${now}`,(_err,_result,_field)=> {
         if (_result.length > 0) {
             res.send(_result)
         }

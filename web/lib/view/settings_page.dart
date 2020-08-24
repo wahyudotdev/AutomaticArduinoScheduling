@@ -3,11 +3,11 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:web/controller/RelayController.dart';
-import 'package:web/controller/ScheduleController.dart';
-import 'package:web/services/ApiConnect.dart';
+import 'package:web/controller/relay_controller.dart';
+import 'package:web/controller/schedule_controller.dart';
+import 'package:web/services/api_connect.dart';
 
-import '../services/View.dart';
+import '../services/view.dart';
 
 class SettingPage extends StatelessWidget {
   // ignore: unused_field

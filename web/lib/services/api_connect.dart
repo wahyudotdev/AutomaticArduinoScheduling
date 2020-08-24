@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:web/controller/RelayController.dart';
-import 'package:web/controller/ScheduleController.dart';
-import 'package:web/controller/SensorController.dart';
-import 'package:web/controller/WarningController.dart';
+import 'package:web/controller/relay_controller.dart';
+import 'package:web/controller/schedule_controller.dart';
+import 'package:web/controller/sensor_controller.dart';
+import 'package:web/controller/warning_controller.dart';
 
 class ApiConnect {
   var _baseUrl = 'http://localhost:3000';
@@ -51,10 +51,12 @@ class ApiConnect {
     try {
       await http.get('$_baseUrl/cekjadwal').then((value) {
         int timestamp = json.decode(value.body)[0]['timestamp'];
-        Get.find<WarningController>().remainTime(timestamp);
+        int state = json.decode(value.body)[0]['state'];
+        print('$timestamp => $state');
+        Get.find<WarningController>().remainTime(timestamp, state);
       });
     } catch (e) {
-      Get.find<WarningController>().remainTime(0);
+      Get.find<WarningController>().remainTime(0, null);
     }
   }
 

@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:web/controller/WarningController.dart';
-import 'package:web/view/Settings.dart';
-import 'package:web/services/ApiConnect.dart';
-import 'package:web/controller/SensorController.dart';
-import 'package:web/services/View.dart';
+import 'package:web/controller/warning_controller.dart';
+import 'package:web/view/settings_page.dart';
+import 'package:web/services/api_connect.dart';
+import 'package:web/controller/sensor_controller.dart';
+import 'package:web/services/view.dart';
 
-import '../services/View.dart';
+import '../services/view.dart';
 
 class Home extends StatelessWidget {
   // ignore: unused_field
